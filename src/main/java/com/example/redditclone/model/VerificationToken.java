@@ -24,4 +24,9 @@ public class VerificationToken {
     @OneToOne(fetch = LAZY)
     private User user;
     private Instant expiryDate;
+
+    public VerificationToken(String token, User user) {
+        this.token = token;
+        this.user = user;
+    }
 }
