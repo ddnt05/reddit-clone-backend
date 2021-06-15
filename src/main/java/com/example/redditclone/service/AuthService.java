@@ -3,6 +3,8 @@ package com.example.redditclone.service;
 import com.example.redditclone.dto.RegisterRequestDTO;
 
 import com.example.redditclone.exception.SpringRedditException;
+import com.example.redditclone.exception.UserDoesNotExistException;
+import com.example.redditclone.exception.VerificationTokenNotFoundException;
 import com.example.redditclone.model.NotificationEmail;
 import com.example.redditclone.model.User;
 import com.example.redditclone.model.VerificationToken;
@@ -59,4 +61,14 @@ public class AuthService {
     }
 
 
+    public void verifyAccount(String token) throws VerificationTokenNotFoundException, UserDoesNotExistException {
+        VerificationToken verificationToken = verificationTokenRepository.findVerificationTokenByToken(token)
+                .orElseThrow(VerificationTokenNotFoundException::new);
+        getUserAndEnable(verificationToken.getUser());
+    }
+
+    private void getUserAndEnable(User user) throws UserDoesNotExistException {
+        User actualUser = userRepository.findById(user.getUserId()).orElseThrow(UserDoesNotExistException::new);
+        userRepository.save(actualUser).setEnabled(true);
+    }
 }
