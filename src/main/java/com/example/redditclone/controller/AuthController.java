@@ -1,6 +1,11 @@
 package com.example.redditclone.controller;
 
+import com.example.redditclone.dto.LoginRequestDTO;
+import com.example.redditclone.dto.LoginResponseDTO;
+import com.example.redditclone.dto.LoginSuccessResponseDTO;
 import com.example.redditclone.dto.RegisterRequestDTO;
+import com.example.redditclone.exception.InvalidPasswordException;
+import com.example.redditclone.exception.MissingParameterException;
 import com.example.redditclone.exception.UserDoesNotExistException;
 import com.example.redditclone.exception.VerificationTokenNotFoundException;
 import com.example.redditclone.service.AuthService;
@@ -31,6 +36,11 @@ public class AuthController {
     public ResponseEntity<String> verifyAccount(@PathVariable String token) throws UserDoesNotExistException, VerificationTokenNotFoundException {
         authService.verifyAccount(token);
         return new ResponseEntity<>("Account Activation Successful", OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<? extends LoginResponseDTO> login (@RequestBody LoginRequestDTO loginRequestDTO) throws InvalidPasswordException, MissingParameterException {
+        return ResponseEntity.ok(authService.login(loginRequestDTO));
     }
 
 
